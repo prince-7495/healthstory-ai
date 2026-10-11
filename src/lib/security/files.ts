@@ -152,7 +152,8 @@ export function decodeBase64(content: string): Buffer | null {
 
 /** Root of the private file store. Never inside `public/`. */
 export function storageRoot(): string {
-  return path.resolve(process.env.STORAGE_DIR || path.join(process.cwd(), "storage"));
+  // turbopackIgnore: dynamic path resolved at runtime, not bundled
+  return path.resolve(/*turbopackIgnore: true*/ process.env.STORAGE_DIR || path.join(process.cwd(), "storage"));
 }
 
 /**
@@ -185,7 +186,7 @@ export async function saveDocumentBytes(storageKey: string, bytes: Buffer): Prom
 
 export async function readDocumentBytes(storageKey: string): Promise<Buffer | null> {
   try {
-    return await readFile(resolveStoragePath(storageKey));
+    return await readFile(/*turbopackIgnore: true*/ resolveStoragePath(storageKey));
   } catch {
     return null;
   }

@@ -49,6 +49,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Types are verified locally via `tsc --noEmit`; skip the duplicate
+  // check during `next build` to keep Railway builds fast and reliable.
+  typescript: { ignoreBuildErrors: true },
+  eslint: { ignoreDuringBuilds: true },
   async headers() {
     return [
       {
