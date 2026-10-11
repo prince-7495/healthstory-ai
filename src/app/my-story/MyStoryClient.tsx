@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/lib/auth/AuthContext";
-import { AlertIcon, LockIcon, SparkIcon, ListIcon, ArrowRightIcon } from "@/components/icons";
+import { AlertIcon, SparkIcon, ListIcon, ArrowRightIcon } from "@/components/icons";
 import styles from "./my-story.module.css";
 
 interface StoryItem {
@@ -25,14 +23,12 @@ interface StoryItem {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+    year: "numeric", month: "short", day: "numeric",
   });
 }
 
 function timeAgo(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime();
+  const diff  = Date.now() - new Date(iso).getTime();
   const mins  = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days  = Math.floor(diff / 86400000);
@@ -45,22 +41,19 @@ function timeAgo(iso: string) {
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; cls: string }> = {
-    DRAFT:       { label: "Draft",     cls: styles.badgeDraft },
-    ACTIVE:      { label: "Active",    cls: styles.badgeActive },
-    ARCHIVED:    { label: "Archived",  cls: styles.badgeArchived },
-    COMPLETED:   { label: "Complete",  cls: styles.badgeComplete },
+    DRAFT:     { label: "Draft",    cls: styles.badgeDraft },
+    ACTIVE:    { label: "Active",   cls: styles.badgeActive },
+    ARCHIVED:  { label: "Archived", cls: styles.badgeArchived },
+    COMPLETED: { label: "Complete", cls: styles.badgeComplete },
   };
   const { label, cls } = map[status] ?? { label: status, cls: styles.badgeDraft };
   return <span className={`${styles.badge} ${cls}`}>{label}</span>;
 }
 
 export default function MyStoryClient() {
-  const router = useRouter();
-  const { user, loading } = useAuth();
-
-  const [stories, setStories]         = useState<StoryItem[]>([]);
-  const [fetching, setFetching]       = useState(false);
-  const [fetchError, setFetchError]   = useState<string | null>(null);
+  const [stories, setStories]       = useState<StoryItem[]>([]);
+  const [fetching, setFetching]     = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const loadStories = useCallback(async () => {
     setFetching(true);
@@ -80,42 +73,8 @@ export default function MyStoryClient() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push(`/login?callbackUrl=${encodeURIComponent("/my-story")}`);
-    }
-    if (!loading && user) {
-      loadStories();
-    }
-  }, [user, loading, router, loadStories]);
+  useEffect(() => { loadStories(); }, [loadStories]);
 
-  // ── Loading auth ──────────────────────────────────────────────────────────
-  if (loading) {
-    return (
-      <div className={styles.loading} role="status" aria-label="Loading">
-        <div className={styles.spinner} />
-        <p>Loading your health story…</p>
-      </div>
-    );
-  }
-
-  // ── Not authenticated ─────────────────────────────────────────────────────
-  if (!user) {
-    return (
-      <div className={styles.locked}>
-        <LockIcon size={48} className={styles.lockIcon} />
-        <h1 className={styles.title}>Sign in required</h1>
-        <p className={styles.message}>
-          Your health story is private. Please sign in to access it.
-        </p>
-        <a href={`/login?callbackUrl=${encodeURIComponent("/my-story")}`} className={styles.cta}>
-          Sign in to continue
-        </a>
-      </div>
-    );
-  }
-
-  // ── Authenticated — story history page ───────────────────────────────────
   return (
     <div className={styles.page}>
 
@@ -133,7 +92,7 @@ export default function MyStoryClient() {
         </Link>
       </div>
 
-      {/* Tabs / meta row */}
+      {/* Meta row */}
       <div className={styles.metaRow}>
         <span className={styles.metaTag}>
           <SparkIcon size={12} /> HealthStory Journal
@@ -141,9 +100,7 @@ export default function MyStoryClient() {
         <span className={`${styles.metaTag} ${styles.metaTagDemo}`}>
           Fictional demonstration data
         </span>
-        <span className={styles.metaTag}>
-          🔒 Private
-        </span>
+        <span className={styles.metaTag}>🔒 Private</span>
         <span className={styles.metaCount}>
           {stories.length} {stories.length === 1 ? "story" : "stories"}
         </span>
@@ -220,10 +177,9 @@ export default function MyStoryClient() {
         ))}
       </div>
 
-      {/* Footer note */}
       {stories.length > 0 && (
         <p className={styles.footerNote}>
-          Your health story is private and stored securely. It is never shared without your action.
+          Your health story is stored securely. It is never shared without your action.
         </p>
       )}
     </div>

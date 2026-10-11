@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/client";
+﻿import { prisma } from "@/lib/db/client";
 import { compare, hash } from "bcryptjs";
 import { randomUUID } from "crypto";
 import { SignJWT, jwtVerify } from "jose";
@@ -54,7 +54,7 @@ export interface SessionPayload {
 
 /**
  * Create a session: a row in `user_sessions` plus a signed JWT that
- * references it. The row is what makes logout real — a revoked row is
+ * references it. The row is what makes logout real ΓÇö a revoked row is
  * rejected even though the JWT itself is still cryptographically valid.
  */
 export async function createSession(
@@ -72,7 +72,7 @@ export async function createSession(
     },
   });
 
-  // Opportunistic cleanup of expired rows — keeps the table small
+  // Opportunistic cleanup of expired rows ΓÇö keeps the table small
   // without a scheduled job.
   void prisma.userSession
     .deleteMany({ where: { expiresAt: { lt: new Date() } } })
@@ -85,7 +85,7 @@ export async function createSession(
     .sign(SECRET);
 }
 
-/** Verify the signature and expiry only — no database involvement. */
+/** Verify the signature and expiry only ΓÇö no database involvement. */
 export async function verifySession(token: string): Promise<SessionPayload | null> {
   try {
     const { payload } = await jwtVerify(token, SECRET);
@@ -131,9 +131,9 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 /**
- * Full authentication check: JWT validity → session row (exists,
- * matches the token's user, not revoked, not expired) → active user.
- * Any database failure fails closed (null → 401).
+ * Full authentication check: JWT validity ΓåÆ session row (exists,
+ * matches the token's user, not revoked, not expired) ΓåÆ active user.
+ * Any database failure fails closed (null ΓåÆ 401).
  */
 export async function getUserFromToken(token: string) {
   try {

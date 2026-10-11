@@ -1,5 +1,5 @@
-﻿/* =============================================================
-   Stage 2 â€” Health Story Workspace
+/* =============================================================
+   Stage 2 — Health Story Workspace
    Built entirely on the Stage 1 tokens in globals.css, so this
    screen reads as the same product: same radius scale, same
    shadows, same teal accent, same type pairing.
@@ -517,7 +517,7 @@
   100% { transform: scale(1.75); opacity: 0; }
 }
 
-/* Waveform â€” pure CSS, driven by --level (0..1) per bar */
+/* Waveform — pure CSS, driven by --level (0..1) per bar */
 .wave {
   display: flex;
   align-items: center;
@@ -2224,7 +2224,7 @@
 
 
 /* =============================================================
-   Stage 3 — Analysis Dashboard
+   Stage 3 � Analysis Dashboard
    Extends Stage 2 tokens. No new design language introduced.
    ============================================================= */
 
@@ -3160,173 +3160,3 @@
     transition: none !important;
   }
 }
-
-/* ── Stories dropdown (AppHeader) ─────────────────────────────────────────── */
-
-.storiesMenu {
-  position: relative;
-}
-
-.storiesBtn {
-  /* Inherits .backLink — just add cursor */
-  cursor: pointer;
-  border: none;
-  background: var(--surface);
-  font-family: inherit;
-}
-
-.storiesDropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  width: 320px;
-  background: var(--surface, #fff);
-  border: 1px solid var(--line, #e5e7eb);
-  border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-  z-index: 200;
-  overflow: hidden;
-  animation: dropIn 0.15s ease;
-}
-
-@keyframes dropIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.storiesDropdownHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px 10px;
-  border-bottom: 1px solid var(--line, #e5e7eb);
-}
-.storiesDropdownTitle {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ink-500, #888);
-}
-.storiesViewAll {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--brand, #3b82f6);
-  text-decoration: none;
-}
-.storiesViewAll:hover { text-decoration: underline; }
-
-.storiesDropdownLoading {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 20px 16px;
-  font-size: 0.85rem;
-  color: var(--ink-400, #888);
-}
-.storiesSpinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--line, #e5e7eb);
-  border-top-color: var(--brand, #3b82f6);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  flex-shrink: 0;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.storiesDropdownEmpty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px 16px;
-  gap: 8px;
-  color: var(--ink-400, #888);
-  font-size: 0.85rem;
-}
-.storiesStartBtn {
-  margin-top: 4px;
-  padding: 6px 16px;
-  border-radius: 8px;
-  background: var(--brand, #3b82f6);
-  color: #fff;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-.storiesStartBtn:hover { opacity: 0.88; }
-
-.storiesDropdownList {
-  list-style: none;
-  margin: 0;
-  padding: 6px 0;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.storiesDropdownItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px 16px;
-  text-decoration: none;
-  transition: background 0.1s;
-}
-.storiesDropdownItem:hover {
-  background: var(--surface-raised, #f9fafb);
-}
-.storiesDropdownItemCurrent {
-  background: linear-gradient(90deg, #eff6ff 0%, transparent 100%);
-  border-left: 3px solid var(--brand, #3b82f6);
-  padding-left: 13px;
-}
-.storiesDropdownItemLeft {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-  flex: 1;
-}
-.storiesDropdownItemTitle {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--ink-800, #111);
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.storiesDropdownItemNew {
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 999px;
-  background: var(--brand, #3b82f6);
-  color: #fff;
-  letter-spacing: 0.04em;
-  flex-shrink: 0;
-}
-.storiesDropdownItemMeta {
-  font-size: 0.74rem;
-  color: var(--ink-400, #888);
-}
-.storiesDropdownItemArrow {
-  color: var(--ink-300, #ccc);
-  flex-shrink: 0;
-}
-
-.storiesDropdownFoot {
-  padding: 10px 16px;
-  border-top: 1px solid var(--line, #e5e7eb);
-  text-align: center;
-}
-.storiesDropdownFootLink {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--brand, #3b82f6);
-  text-decoration: none;
-}
-.storiesDropdownFootLink:hover { text-decoration: underline; }

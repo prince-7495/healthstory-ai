@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { getUserFromToken } from "./session";
 import { prisma } from "@/lib/db/client";
 import { forbidden, invalidSession, unauthenticated } from "@/lib/api/errors";
