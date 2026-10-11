@@ -345,8 +345,7 @@ export class OpenAIProvider implements AIProvider {
 
   private schemaToPrompt(schema: z.ZodTypeAny, name: string): string {
     try {
-      // Use zod-to-json-schema if available, otherwise describe manually
-      const jsonSchema = z.toJSONSchema(schema, { name, target: "jsonSchema7" });
+      const jsonSchema = z.toJSONSchema(schema, { target: "jsonSchema7" });
       return `Output must be valid JSON matching this JSON Schema (${name}):\n${JSON.stringify(jsonSchema, null, 2)}`;
     } catch {
       return `Output must be valid JSON matching the ${name} schema.`;
