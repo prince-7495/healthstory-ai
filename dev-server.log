@@ -9,3 +9,5 @@
 ✓ Ready in 867ms
 ✓ Running next.config.ts took 73ms
 
+ GET / 200 in 3.2s (next.js: 1195ms, application-code: 1996ms)
+ GET / 200 in 266ms (next.js: 13ms, application-code: 253ms)

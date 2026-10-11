@@ -1,1 +1,0 @@
-SELECT id, status, "errorMessage" FROM ai_processing_records ORDER BY "createdAt" DESC LIMIT 5;
