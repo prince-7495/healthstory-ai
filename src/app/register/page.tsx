@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { AlertIcon, MailIcon, LockIcon, UserIcon } from "@/components/icons";
+import { AlertIcon, MailIcon, LockIcon, UserIcon, LogoMark } from "@/components/icons";
 import styles from "./auth.module.css";
 
 function RegisterForm() {
@@ -51,6 +51,10 @@ function RegisterForm() {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.header}>
+          <a href="/" className={styles.logo}>
+            <LogoMark size={26} />
+            HealthStory AI
+          </a>
           <h1 className={styles.title}>Create your account</h1>
           <p className={styles.subtitle}>Start organizing your health story today</p>
         </div>
