@@ -20,25 +20,12 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 
-# Set build-time env vars for Next.js (Railway injects them automatically)
-ARG DATABASE_URL
-ARG AUTH_SECRET
-ARG AI_PROVIDER
-ARG AI_API_KEY
-ARG AI_BASE_URL
-ARG AI_MODEL
-ARG AI_TIMEOUT_MS
-ARG NODE_ENV=production
+# Generate Prisma client first (uses a dummy URL — only needs the schema)
+RUN DATABASE_URL="postgresql://x:x@localhost:5432/x" npx prisma generate
 
-ENV DATABASE_URL=$DATABASE_URL
+# Build Next.js (real DATABASE_URL injected at runtime, not needed at build)
+ARG AUTH_SECRET="build-placeholder"
 ENV AUTH_SECRET=$AUTH_SECRET
-ENV AI_PROVIDER=$AI_PROVIDER
-ENV AI_API_KEY=$AI_API_KEY
-ENV AI_BASE_URL=$AI_BASE_URL
-ENV AI_MODEL=$AI_MODEL
-ENV AI_TIMEOUT_MS=$AI_TIMEOUT_MS
-ENV NODE_ENV=$NODE_ENV
-
 RUN npm run build
 
 # ===== Production Stage =====
