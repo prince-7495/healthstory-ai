@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "db:push": "prisma db push",
@@ -13,7 +13,7 @@
     "db:reset": "prisma migrate reset",
     "db:seed": "node prisma/seed.mjs",
     "test:security": "node scripts/security-tests.mjs",
-    "postinstall": "prisma skills sync || exit 0"
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "node prisma/seed.mjs"
