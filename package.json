@@ -13,7 +13,7 @@
     "db:reset": "prisma migrate reset",
     "db:seed": "node prisma/seed.mjs",
     "test:security": "node scripts/security-tests.mjs",
-    "postinstall": "prisma generate"
+    "postinstall": "echo 'install complete'"
   },
   "prisma": {
     "seed": "node prisma/seed.mjs"

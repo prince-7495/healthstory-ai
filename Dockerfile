@@ -16,6 +16,8 @@ FROM base AS builder
 COPY package*.json ./
 RUN npm ci
 COPY . .
+# prisma generate only needs the schema, not a real DB connection
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
 RUN npm run build
 
 # ===== Production Stage =====
