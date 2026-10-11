@@ -182,6 +182,14 @@ export function UserIcon(props: IconProps) {
   );
 }
 
+export function MailIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4.2 6.2L12 10.8l7.8-4.6M4.2 6.2l7.8 4.6M4.2 6.2v11.6l7.8-4.6" />
+    </Svg>
+  );
+}
+
 export function SparkIcon(props: IconProps) {
   return (
     <Svg {...props}>
@@ -476,6 +484,14 @@ export function ClipboardIcon(props: IconProps) {
       <rect x="5.2" y="4.6" width="13.6" height="16.2" rx="2.2" />
       <path d="M9.2 4.6V3.4a1.4 1.4 0 0 1 1.4-1.4h2.8a1.4 1.4 0 0 1 1.4 1.4v1.2" />
       <path d="M8.6 9h6.8M8.6 12.6h6.8M8.6 16.2h4.4" />
+    </Svg>
+  );
+}
+
+export function LogOutIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M16.2 12.4H9M16.2 12.4l2.8-2.8M16.2 12.4l2.8 2.8M4.2 6.2l2.8-2.8M4.2 18.6l2.8 2.8M21.4 12.4h-17.2" />
     </Svg>
   );
 }

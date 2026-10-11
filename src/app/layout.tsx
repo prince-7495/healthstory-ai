@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -84,7 +85,7 @@ export default function RootLayout({
         <a className="skip-link" href="#main">
           Skip to main content
         </a>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

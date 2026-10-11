@@ -2,13 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { brand, nav } from "@/lib/content";
-import { CloseIcon, LogoMark, MenuIcon, ArrowRightIcon } from "./icons";
+import { useAuth } from "@/lib/auth/AuthContext";
+import { CloseIcon, LogoMark, MenuIcon, ArrowRightIcon, UserIcon, LogOutIcon } from "./icons";
 import styles from "./navbar.module.css";
 
 export default function Navbar() {
+  const router = useRouter();
+  const { user, loading, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+    router.refresh();
+  };
 
   // Compact the bar once the hero starts leaving.
   useEffect(() => {
@@ -33,6 +43,19 @@ export default function Navbar() {
     };
   }, [open]);
 
+  if (loading) {
+    return (
+      <header className={styles.wrap} data-scrolled={scrolled || undefined}>
+        <div className={styles.inner}>
+          <a href="#top" className={styles.brand} aria-label={`${brand.name} — home`}>
+            <LogoMark size={30} />
+            <span className={styles.brandText}>{brand.name}</span>
+          </a>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className={styles.wrap} data-scrolled={scrolled || undefined}>
       <div className={styles.inner}>
@@ -56,13 +79,33 @@ export default function Navbar() {
         </nav>
 
         <div className={styles.actions}>
-          <Link href="/workspace" className={`btn btn--primary ${styles.cta}`} aria-label={nav.cta}>
-            <span className={styles.ctaFull}>{nav.cta}</span>
-            <span className={styles.ctaShort} aria-hidden="true">
-              Start
-            </span>
-            <ArrowRightIcon size={17} className="btn__arrow" />
-          </Link>
+          {user ? (
+            <>
+              <Link href="/my-story" className={`btn btn--secondary ${styles.cta}`}>
+                <UserIcon size={17} className="btn__icon" />
+                <span className={styles.ctaFull}>My Story</span>
+              </Link>
+              <button
+                type="button"
+                className={`btn btn--ghost ${styles.logoutBtn}`}
+                onClick={handleLogout}
+                aria-label="Sign out"
+              >
+                <LogOutIcon size={17} className="btn__icon" />
+                <span>Sign out</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className={`btn btn--primary ${styles.cta}`} aria-label={nav.cta}>
+                <span className={styles.ctaFull}>{nav.cta}</span>
+                <span className={styles.ctaShort} aria-hidden="true">
+                  Start
+                </span>
+                <ArrowRightIcon size={17} className="btn__arrow" />
+              </Link>
+            </>
+          )}
 
           <button
             type="button"
@@ -112,14 +155,35 @@ export default function Navbar() {
             ),
           )}
         </nav>
-        <Link
-          href="/workspace"
-          className={`btn btn--primary ${styles.mobileCta}`}
-          onClick={() => setOpen(false)}
-        >
-          {nav.cta}
-          <ArrowRightIcon size={17} className="btn__arrow" />
-        </Link>
+        {user ? (
+          <>
+            <Link
+              href="/my-story"
+              className={`btn btn--secondary ${styles.mobileCta}`}
+              onClick={() => setOpen(false)}
+            >
+              <UserIcon size={17} className="btn__icon" />
+              My Story
+            </Link>
+            <button
+              type="button"
+              className={`btn btn--ghost ${styles.mobileCta}`}
+              onClick={handleLogout}
+            >
+              <LogOutIcon size={17} className="btn__icon" />
+              Sign out
+            </button>
+          </>
+        ) : (
+          <Link
+            href="/login"
+            className={`btn btn--primary ${styles.mobileCta}`}
+            onClick={() => setOpen(false)}
+          >
+            {nav.cta}
+            <ArrowRightIcon size={17} className="btn__arrow" />
+          </Link>
+        )}
         <p className={styles.mobileNote}>
           Informational and communication tool — not a substitute for
           professional medical care.

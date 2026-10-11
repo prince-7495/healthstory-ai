@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import StoryJournalApp from "@/components/journal/StoryJournalApp";
+import MyStoryClient from "./MyStoryClient";
 
 export const metadata: Metadata = {
   title: "My Health Story",
@@ -16,5 +16,5 @@ export const metadata: Metadata = {
  * continue their story. Nothing is sent to a server.
  */
 export default function MyStoryPage() {
-  return <StoryJournalApp />;
+  return <MyStoryClient />;
 }
