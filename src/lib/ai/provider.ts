@@ -419,7 +419,7 @@ export class OpenAIProvider implements AIProvider {
 Rules:
 - Extract ONLY what the user explicitly stated. Do not infer, diagnose, or add medical knowledge.
 - Preserve uncertainty: if the user says "around March", do not convert to "March 15".
-- Each event must include the exact source text it came from (sourceText field).
+- Each event MUST include: description (required), sourceText (required), date (YYYY-MM-DD or null), datePrecision, category, extractionConfidence.
 - Do not generate diagnoses, treatments, or medication recommendations.
 - If information is not in the text, do not include it.
 - Date format: YYYY-MM-DD or null if unknown.
