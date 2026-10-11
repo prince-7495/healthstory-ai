@@ -165,12 +165,23 @@ export default function ConversationDraftView({
 
   async function print() {
     const { draftToPrintHtml } = await import("@/lib/communication/engine");
-    const win = window.open("", "_blank", "noopener,noreferrer");
-    if (!win) return;
-    win.document.write(draftToPrintHtml(draft));
+    const html = draftToPrintHtml(draft);
+    const win = window.open("", "_blank", "noopener,noreferrer,width=800,height=600");
+    if (!win) {
+      // Popup blocked — fallback: create a blob URL and navigate
+      const blob = new Blob([html], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "healthstory-summary.html";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      return;
+    }
+    win.document.open();
+    win.document.write(html);
     win.document.close();
     win.focus();
-    win.print();
   }
 
   if (view === "rehearsal") {

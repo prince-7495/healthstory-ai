@@ -321,20 +321,55 @@ export function draftToPlainText(draft: CommunicationDraft): string {
 }
 
 export function draftToPrintHtml(draft: CommunicationDraft): string {
-  const parts = [];
-  parts.push("<h1>HealthStory Communication Summary</h1>");
-  parts.push(`<p><strong>Version:</strong> ${draft.version}</p>`);
-  parts.push(`<p><strong>Language:</strong> ${draft.languageLabel}</p>`);
-  parts.push(`<p><strong>Style:</strong> ${draft.style}</p>`);
-  parts.push(`<p><strong>Tone:</strong> ${draft.tone}</p>`);
-  if (draft.whatINoticed?.length) parts.push("<h2>What I noticed</h2><ul>" + draft.whatINoticed.map((l) => `<li>${l.text}</li>`).join("") + "</ul>");
-  if (draft.timeline?.length) parts.push("<h2>Timeline</h2><ul>" + draft.timeline.map((l) => `<li>${l.text}</li>`).join("") + "</ul>");
-  if (draft.reportedChanges?.length) parts.push("<h2>Changes</h2><ul>" + draft.reportedChanges.map((l) => `<li>${l.text}</li>`).join("") + "</ul>");
-  if (draft.relevantContext?.length) parts.push("<h2>Context</h2><ul>" + draft.relevantContext.map((l) => `<li>${l.text}</li>`).join("") + "</ul>");
-  if (draft.recentUpdate) parts.push("<h2>Recent update</h2><p>" + draft.recentUpdate.text + "</p>");
-  if (draft.questions?.length) parts.push("<h2>Questions</h2><ul>" + draft.questions.map((q) => `<li>${q.text}</li>`).join("") + "</ul>");
-  if (draft.missingInformation?.length) parts.push("<h2>Information not recorded</h2><ul>" + draft.missingInformation.map((m) => `<li>${m}</li>`).join("") + "</ul>");
-  if (draft.oneMinute) parts.push("<h2>One-minute story</h2><p>" + draft.oneMinute.text + "</p>");
-  parts.push("<hr/><p><em>HealthStory AI helps organize and communicate information you record. It does not diagnose conditions or replace professional medical advice.</em></p>");
-  return parts.join("\n");
+  const sections: string[] = [];
+  if (draft.whatINoticed?.length)
+    sections.push(`<h2>What I Noticed</h2><ul>${draft.whatINoticed.map((l) => `<li>${l.text}</li>`).join("")}</ul>`);
+  if (draft.timeline?.length)
+    sections.push(`<h2>Timeline</h2><ul>${draft.timeline.map((l) => `<li>${l.text}</li>`).join("")}</ul>`);
+  if (draft.reportedChanges?.length)
+    sections.push(`<h2>Changes</h2><ul>${draft.reportedChanges.map((l) => `<li>${l.text}</li>`).join("")}</ul>`);
+  if (draft.relevantContext?.length)
+    sections.push(`<h2>Context</h2><ul>${draft.relevantContext.map((l) => `<li>${l.text}</li>`).join("")}</ul>`);
+  if (draft.recentUpdate)
+    sections.push(`<h2>Recent Update</h2><p>${draft.recentUpdate.text}</p>`);
+  if (draft.questions?.length)
+    sections.push(`<h2>Questions for My Doctor</h2><ul>${draft.questions.map((q) => `<li>${q.text}</li>`).join("")}</ul>`);
+  if (draft.missingInformation?.length)
+    sections.push(`<h2>Information Not Recorded</h2><ul>${draft.missingInformation.map((m) => `<li>${m}</li>`).join("")}</ul>`);
+  if (draft.oneMinute)
+    sections.push(`<h2>One-Minute Story</h2><p>${draft.oneMinute.text}</p>`);
+
+  const meta = [
+    `<span><strong>Version:</strong> ${draft.version}</span>`,
+    `<span><strong>Language:</strong> ${draft.languageLabel ?? draft.language ?? ""}</span>`,
+    `<span><strong>Style:</strong> ${draft.style ?? ""}</span>`,
+    draft.periodLabel ? `<span><strong>Period:</strong> ${draft.periodLabel}</span>` : "",
+  ].filter(Boolean).join(" &nbsp;|&nbsp; ");
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HealthStory — Communication Summary</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Georgia,"Times New Roman",serif;font-size:13pt;line-height:1.7;color:#111;background:#fff;padding:2cm 2.5cm;max-width:800px;margin:0 auto}
+    h1{font-size:20pt;font-weight:bold;margin-bottom:6px}
+    .meta{font-size:10pt;color:#555;margin-bottom:24px;border-bottom:1px solid #ddd;padding-bottom:12px}
+    h2{font-size:13pt;font-weight:bold;margin-top:22px;margin-bottom:6px;border-bottom:1px solid #eee;padding-bottom:4px}
+    p{margin-bottom:10px}
+    ul{padding-left:20px;margin-bottom:10px}
+    li{margin-bottom:5px}
+    .disclaimer{margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:9pt;color:#666;font-style:italic}
+    @media print{body{padding:0}@page{margin:2cm 2.5cm}}
+  </style>
+</head>
+<body>
+  <h1>HealthStory Communication Summary</h1>
+  <div class="meta">${meta}</div>
+  ${sections.join("\n  ")}
+  <div class="disclaimer">HealthStory AI helps you organize and communicate information you have recorded. It does not diagnose conditions, recommend treatments, or replace professional medical advice.</div>
+  <script>window.onload=function(){window.print();setTimeout(function(){window.close();},500);};</script>
+</body>
+</html>`;
 }
