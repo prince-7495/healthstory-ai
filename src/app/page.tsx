@@ -1,69 +1,45 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import ChangeDetectionPreview from "@/components/ChangeDetectionPreview";
+import FinalCTA from "@/components/FinalCTA";
+import Footer from "@/components/Footer";
+import GlobalAccessibility from "@/components/GlobalAccessibility";
+import Hero from "@/components/Hero";
+import HowItWorks from "@/components/HowItWorks";
+import HumanCenteredSection from "@/components/HumanCenteredSection";
+import Navbar from "@/components/Navbar";
+import PrivacySection from "@/components/PrivacySection";
+import ProblemSection from "@/components/ProblemSection";
+import SafetySection from "@/components/SafetySection";
+import SolutionSection from "@/components/SolutionSection";
+import TransformationSection from "@/components/TransformationSection";
 
-export default function Home() {
+/**
+ * HealthStory AI — Stage 1: the public landing page.
+ *
+ * Narrative order is deliberate and judge-first:
+ *   Hero (what it is) → Problem → Transformation (the wow moment) →
+ *   Product → How it works → What Changed? (differentiator) →
+ *   Languages → Human impact → Safety → Privacy → CTA
+ */
+export default function Page() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <Navbar />
+
+      <main id="main">
+        <Hero />
+        <ProblemSection />
+        <TransformationSection />
+        <SolutionSection />
+        <HowItWorks />
+        <ChangeDetectionPreview />
+        <GlobalAccessibility />
+        <HumanCenteredSection />
+        <SafetySection />
+        <PrivacySection />
+        <FinalCTA />
       </main>
-    </div>
+
+      <Footer />
+    </>
   );
 }

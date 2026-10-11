@@ -1,0 +1,180 @@
+/* =============================================================
+   FinalCTA — closing call to action (dark bookend)
+   ============================================================= */
+
+.ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 70% at 22% 8%, rgba(63, 159, 176, 0.2), transparent 70%),
+    radial-gradient(40% 60% at 88% 96%, rgba(168, 130, 96, 0.13), transparent 72%);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+  gap: clamp(32px, 5vw, 58px);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- copy ---------- */
+/* `.eyebrow` lives in globals.css, so it must be reached through :global(). */
+.copy :global(.eyebrow) {
+  color: var(--brand-300);
+}
+
+.copy :global(.eyebrow)::before {
+  background: var(--brand-400);
+}
+
+.title {
+  margin-top: 18px;
+  font-size: clamp(1.95rem, 3.6vw, 2.9rem);
+  letter-spacing: -0.032em;
+  max-width: 15ch;
+}
+
+.lede {
+  margin-top: 18px;
+  max-width: 46ch;
+}
+
+.btnRow {
+  margin-top: 32px;
+}
+
+.secondary {
+  margin-top: 20px;
+  font-size: 13.8px;
+  color: #93a6b4;
+}
+
+/* ---------- expandable panel ---------- */
+.panel {
+  padding: 26px 26px 24px;
+  border-radius: var(--r-xl);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(6px);
+  animation: hs-panel 420ms var(--ease-out);
+}
+
+@keyframes hs-panel {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.panelLabel {
+  font-size: 11.4px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8ea2b0;
+  margin-bottom: 20px;
+}
+
+.paths {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.path {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 16px;
+  padding: 16px 18px;
+  border-radius: var(--r-lg);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  transition:
+    background-color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
+  animation: hs-panel 420ms var(--ease-out);
+  animation-delay: calc(90ms + var(--i) * 80ms);
+  animation-fill-mode: backwards;
+}
+
+.path:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(113, 189, 202, 0.34);
+}
+
+.pathIndex {
+  grid-row: span 2;
+  font-family: var(--font-display);
+  font-size: 12.4px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--brand-300);
+  padding-top: 2px;
+}
+
+.pathTitle {
+  font-family: var(--font-display);
+  font-size: 15.6px;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  color: #f2f5f7;
+}
+
+.pathText {
+  margin-top: 4px;
+  font-size: 13.4px;
+  line-height: 1.55;
+  color: #9db0bd;
+}
+
+.pathStatus {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: 9px;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 11.2px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #b9c6d1;
+}
+
+.panelNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.16);
+  font-size: 12.8px;
+  line-height: 1.6;
+  color: #93a6b4;
+}
+
+.panelNote svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--brand-300);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .path {
+    animation: none;
+  }
+}

@@ -1,0 +1,435 @@
+/* =============================================================
+   HowItWorks + ChangeDetectionPreview
+   ============================================================= */
+
+/* =============================================================
+   1. How it works
+   ============================================================= */
+.flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+  padding: 22px 20px;
+  margin-bottom: 42px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--sh-sm);
+}
+
+.flowStep {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.flowDot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--brand-500);
+  box-shadow: 0 0 0 4px var(--brand-50);
+  transform: scale(0.4);
+  opacity: 0;
+  transition:
+    transform 480ms var(--ease-out),
+    opacity 480ms var(--ease-out);
+}
+
+.flowLabel {
+  margin-left: 11px;
+  font-family: var(--font-display);
+  font-size: 14.6px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink-800);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity 480ms var(--ease-out),
+    transform 480ms var(--ease-out);
+}
+
+.flowLine {
+  display: block;
+  width: clamp(22px, 5vw, 62px);
+  height: 1.5px;
+  margin-inline: 14px;
+  background: linear-gradient(90deg, var(--brand-200), var(--brand-400));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 520ms var(--ease-out);
+}
+
+:global(.is-in) .flowDot {
+  opacity: 1;
+  transform: scale(1);
+  transition-delay: calc(var(--i) * 150ms);
+}
+
+:global(.is-in) .flowLabel {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--i) * 150ms + 70ms);
+}
+
+:global(.is-in) .flowLine {
+  transform: scaleX(1);
+  transition-delay: calc(var(--i) * 150ms + 150ms);
+}
+
+@media (max-width: 720px) {
+  .flow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 20px 22px;
+  }
+  .flowStep {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .flowLabel {
+    margin: 10px 0 10px 0;
+  }
+  .flowLine {
+    width: 1.5px;
+    height: 26px;
+    margin-inline: 0 0 0 4px;
+    background: linear-gradient(180deg, var(--brand-200), var(--brand-400));
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  :global(.is-in) .flowLine {
+    transform: scaleY(1);
+  }
+}
+
+/* ---------- steps ---------- */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 1000px) {
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.steps > li {
+  display: flex;
+}
+
+.step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 26px 22px 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  transition:
+    transform var(--t-mid) var(--ease),
+    box-shadow var(--t-mid) var(--ease),
+    border-color var(--t-mid) var(--ease);
+}
+
+.step:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sh-md);
+  border-color: var(--brand-200);
+}
+
+.stepNumber {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--brand-500);
+  margin-bottom: 16px;
+}
+
+.stepTitle {
+  font-size: 1.08rem;
+  letter-spacing: -0.024em;
+}
+
+.stepBody {
+  margin-top: 9px;
+  font-size: 14.6px;
+  line-height: 1.6;
+  color: var(--ink-500);
+}
+
+/* =============================================================
+   2. Change detection — "What Changed?"
+   ============================================================= */
+.compare {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+@media (max-width: 940px) {
+  .compare {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+@media (max-width: 620px) {
+  .panels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.panel {
+  padding: 22px 22px 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+}
+
+.panel[data-active] {
+  border-color: var(--brand-200);
+  box-shadow: var(--sh-md);
+}
+
+.panelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.panelLabel {
+  font-family: var(--font-display);
+  font-size: 12.4px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+.panel[data-active] .panelLabel {
+  color: var(--brand-600);
+}
+
+.panelRange {
+  font-size: 12.4px;
+  color: var(--ink-400);
+  font-variant-numeric: tabular-nums;
+}
+
+.metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metricLabel {
+  font-size: 13.4px;
+  font-weight: 500;
+  color: var(--ink-700);
+  letter-spacing: -0.008em;
+}
+
+.metricBar {
+  display: block;
+  height: 9px;
+  border-radius: var(--r-full);
+  background: var(--bg-alt);
+  border: 1px solid var(--line-soft);
+  overflow: hidden;
+}
+
+.metricFill {
+  display: block;
+  height: 100%;
+  width: var(--w);
+  border-radius: var(--r-full);
+  background: var(--ink-300);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 780ms var(--ease-out);
+  transition-delay: calc(180ms + var(--i) * 110ms);
+}
+
+.metricFill[data-direction="up"] {
+  background: linear-gradient(90deg, #d9a07a, var(--sig-rise));
+}
+
+.metricFill[data-direction="down"] {
+  background: linear-gradient(90deg, #8fc3ae, var(--sig-fall));
+}
+
+:global(.is-in) .metricFill {
+  transform: scaleX(1);
+}
+
+.metricValue {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.6px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-400);
+}
+
+/* Direction is carried by an icon AND a word — never colour alone. */
+.metricVerb {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.2px;
+  font-weight: 600;
+  letter-spacing: -0.004em;
+  color: var(--ink-500);
+}
+
+.metricVerb[data-direction="up"] {
+  color: var(--sig-rise);
+}
+
+.metricVerb[data-direction="down"] {
+  color: var(--sig-fall);
+}
+
+/* ---------- notable changes ---------- */
+.findingsWrap {
+  display: flex;
+}
+
+.findings {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  padding: 24px 24px 22px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(168deg, var(--brand-50), #fff 62%);
+  border: 1px solid var(--brand-100);
+  box-shadow: var(--sh-sm);
+}
+
+.findingsBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  align-self: flex-start;
+  padding: 6px 13px;
+  border-radius: var(--r-full);
+  background: var(--brand-600);
+  color: #fff;
+  font-size: 12.2px;
+  font-weight: 600;
+  box-shadow: var(--sh-brand);
+}
+
+.findingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.finding {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--font-display);
+  font-size: 15.4px;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  line-height: 1.4;
+  color: var(--ink-900);
+}
+
+.finding:last-child {
+  border-bottom: 0;
+}
+
+.findingIndex {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--brand-200);
+  color: var(--brand-600);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.findingsNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px dashed var(--brand-100);
+  font-size: 12.8px;
+  line-height: 1.55;
+  color: var(--ink-500);
+}
+
+.findingsNote svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--brand-400);
+}
+
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  font-size: 12.4px;
+  color: var(--ink-400);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flowDot,
+  .flowLabel,
+  .flowLine,
+  .metricFill {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

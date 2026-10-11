@@ -1,0 +1,149 @@
+/* =============================================================
+   HumanCenteredSection + SafetySection + PrivacySection
+   ============================================================= */
+
+/* ---------- human-centered ---------- */
+.humanCard {
+  height: 100%;
+  padding: 30px 26px 28px;
+}
+
+.humanBody {
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-500);
+}
+
+/* ---------- safety ---------- */
+.safetyGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(34px, 5vw, 62px);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .safetyGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.shield {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 24px;
+  border-radius: var(--r-lg);
+  background: var(--brand-50);
+  border: 1px solid var(--brand-100);
+  color: var(--brand-600);
+}
+
+.safetyTitle {
+  margin-top: 16px;
+}
+
+.emergency {
+  margin-top: 22px;
+  padding: 14px 16px;
+  border-left: 2.5px solid var(--brand-300);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: var(--bg-alt);
+  font-size: 13.6px;
+  line-height: 1.55;
+  color: var(--ink-500);
+}
+
+.safetyList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.safetyItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  padding: 22px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.safetyItem:first-child {
+  padding-top: 4px;
+}
+
+.safetyItem:last-child {
+  border-bottom: 0;
+}
+
+.safetyIndex {
+  font-family: var(--font-display);
+  font-size: 12.4px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  /* brand-600, not brand-400: at 12px on the light canvas brand-400 fails
+     WCAG AA (2.9:1). */
+  color: var(--brand-600);
+  padding-top: 3px;
+}
+
+.safetyItemTitle {
+  font-size: 1.02rem;
+  letter-spacing: -0.022em;
+}
+
+.safetyItemBody {
+  margin-top: 7px;
+  font-size: 14.4px;
+  line-height: 1.6;
+  color: var(--ink-500);
+}
+
+/* ---------- privacy ---------- */
+.privacyCard {
+  height: 100%;
+  padding: 28px 24px 26px;
+}
+
+.privacyIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 18px;
+  border-radius: var(--r-md);
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  color: var(--ink-500);
+}
+
+.privacyBody {
+  margin-top: 9px;
+  font-size: 14.8px;
+  line-height: 1.6;
+  color: var(--ink-500);
+}
+
+.privacyNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 680px;
+  margin: 30px auto 0;
+  padding: 15px 18px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px dashed var(--line-strong);
+  font-size: 13.2px;
+  line-height: 1.55;
+  color: var(--ink-500);
+  text-align: left;
+}
+
+.privacyNote svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--ink-300);
+}

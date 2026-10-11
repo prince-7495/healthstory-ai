@@ -1,0 +1,734 @@
+// HealthStory AI — Stage 10 Database Schema
+// Prisma 5 compatible
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserStatus {
+  ACTIVE
+  ARCHIVED
+  DELETED
+}
+
+enum StoryStatus {
+  ACTIVE
+  ARCHIVED
+  DELETED
+}
+
+enum EventStatus {
+  AI_ORGANIZED
+  USER_REPORTED
+  USER_CONFIRMED
+  USER_EDITED
+  NEEDS_REVIEW
+  ARCHIVED
+}
+
+enum DatePrecision {
+  EXACT
+  MONTH
+  APPROXIMATE
+  RELATIVE
+  RANGE
+  UNKNOWN
+}
+
+enum EventCategory {
+  SYMPTOM
+  MEDICATION
+  TREATMENT
+  TEST
+  APPOINTMENT
+  LIFESTYLE
+  CONTEXT
+  CHANGE
+  OTHER
+}
+
+enum ExtractionConfidence {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum Provenance {
+  USER
+  AI
+}
+
+enum SourceType {
+  USER_ENTRY
+  DOCUMENT
+  FOLLOW_UP
+  COMMUNICATION
+  MANUAL_ENTRY
+}
+
+enum FollowUpType {
+  CONVERSATION
+  APPOINTMENT
+  TEST_OR_REPORT
+  NEW_UPDATE
+  OTHER
+}
+
+enum FollowUpItemStatus {
+  AI_ORGANIZED
+  USER_CONFIRMED
+  USER_EDITED
+  REMOVED
+  NEEDS_REVIEW
+}
+
+enum QuestionSource {
+  USER
+  AI_SUGGESTED
+}
+
+enum QuestionStatus {
+  OPEN
+  ANSWERED
+  DISCUSSED
+  REMOVED
+}
+
+enum DocumentStatus {
+  UPLOADED
+  ANALYZED
+  NEEDS_REVIEW
+  ARCHIVED
+  DELETED
+}
+
+enum CommunicationStatus {
+  DRAFT
+  REVIEWED
+  FINALIZED
+  STALE
+}
+
+enum NodeType {
+  EVENT
+  TOPIC
+  FOLLOW_UP
+  DOCUMENT
+  QUESTION
+  COMMUNICATION
+  SOURCE
+  SNAPSHOT
+}
+
+enum RelationshipType {
+  SAME_TOPIC
+  TEMPORAL_SEQUENCE
+  SOURCE_OF
+  SUPPORTS
+  FOLLOW_UP_TO
+  MENTIONED_IN
+  DERIVED_FROM
+  CORRECTS
+  DUPLICATE_OF
+  USER_LINKED
+}
+
+enum RelationshipConfidence {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum RelationshipOrigin {
+  USER
+  AI
+}
+
+enum VersionChangeReason {
+  INITIAL_CREATION
+  AI_ORGANIZATION
+  USER_CONFIRMATION
+  USER_EDIT
+  FOLLOW_UP
+  DOCUMENT_IMPORT
+  CORRECTION
+}
+
+enum AuditAction {
+  STORY_CREATED
+  EVENT_CREATED
+  EVENT_EDITED
+  EVENT_DELETED
+  EVENT_CONFIRMED
+  DOCUMENT_UPLOADED
+  DOCUMENT_DELETED
+  DOCUMENT_ACCESS
+  COMMUNICATION_GENERATED
+  STORY_EXPORTED
+  STORY_DELETED
+  FOLLOW_UP_ADDED
+  QUESTION_CREATED
+  QUESTION_DELETED
+  USER_EDIT
+  AI_ORGANIZATION
+  CONFIRMATION
+  // Stage 11 security events
+  LOGIN_SUCCESS
+  LOGIN_FAILURE
+  LOGOUT
+  ACCESS_DENIED
+  RATE_LIMIT_TRIGGERED
+}
+
+enum AIProcessingType {
+  STORY_EXTRACTION
+  CHANGE_DETECTION
+  COMMUNICATION_GENERATION
+  DOCUMENT_ANALYSIS
+  TRANSLATION
+  INSIGHT_GENERATION
+}
+
+enum AIProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  VALIDATION_FAILED
+}
+
+// ============================================================
+// CORE MODELS
+// ============================================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  displayName   String?
+  authProvider  String?   // e.g., "email", "google", "github"
+  authProviderId String?  @unique
+  passwordHash  String?   // only for email/password auth
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+  status        UserStatus @default(ACTIVE)
+
+  stories       Story[]
+  documents     Document[]   @relation("UserDocuments")
+  followUps     FollowUpEntry[] @relation("UserFollowUps")
+  questions     StoryQuestion[] @relation("UserQuestions")
+  communications CommunicationSession[] @relation("UserCommunications")
+  auditLogs     AuditLog[]  @relation("UserAuditLogs")
+  sessions      UserSession[]
+
+  @@index([email])
+  @@index([authProviderId])
+  @@map("users")
+}
+
+// Stage 11 — server-side session records so logout really invalidates
+// the session (revoked sessions are rejected even if the JWT is still
+// cryptographically valid). The row id is the JWT `sessionId` (jti).
+model UserSession {
+  id        String    @id
+  userId    String
+  userAgent String?
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("user_sessions")
+}
+
+model Story {
+  id              String    @id @default(cuid())
+  userId          String
+  title           String?
+  language        String    @default("en")
+  status          StoryStatus @default(ACTIVE)
+  currentVersion  Int       @default(1)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  archivedAt      DateTime?
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events          StoryEvent[]
+  topics          Topic[]
+  followUps       FollowUpEntry[]
+  questions       StoryQuestion[]
+  documents       Document[]
+  communications  CommunicationSession[]
+  snapshots       StorySnapshot[]
+  graphNodes      StoryGraphNode[]
+  graphEdges      StoryGraphRelationship[]
+  versions        StoryVersion[]
+  auditLogs       AuditLog[] @relation("StoryAuditLogs")
+  sourceReferences SourceReference[]
+  aiRecords       AIProcessingRecord[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("stories")
+}
+
+model StoryEvent {
+  id                  String        @id @default(cuid())
+  storyId             String
+  date                DateTime?
+  datePrecision       DatePrecision @default(UNKNOWN)
+  description         String
+  frequency           String?
+  severity            String?
+  context             String?
+  changeDescription   String?
+  originalText        String?
+  status              EventStatus   @default(AI_ORGANIZED)
+  createdBy           Provenance    @default(AI)
+  confirmedByUser     Boolean       @default(false)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  // Stage 3+ fields
+  title               String?
+  category            EventCategory?
+  dateText            String?
+  sourceText          String?
+  evidence            Json?         // EvidenceQuote[]
+  mentions            Int?          @default(1)
+  label               String?
+  timeLabel           String?
+  extractionConfidence ExtractionConfidence?
+  needsConfirmation   Boolean       @default(true)
+  metadata            Json?         // flexible metadata
+
+  story               Story         @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  topics              EventTopic[]
+  sourceReferences    SourceReference[] @relation("EventSourceReferences")
+  graphNodeId         String?
+
+  @@index([storyId])
+  @@index([storyId, date])
+  @@index([label])
+  @@map("story_events")
+}
+
+model Topic {
+  id          String   @id @default(cuid())
+  storyId     String
+  name        String
+  description String?
+  status      EventStatus @default(AI_ORGANIZED)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  story       Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  events      EventTopic[]
+
+  @@unique([storyId, name])
+  @@index([storyId])
+  @@map("topics")
+}
+
+model EventTopic {
+  id        String  @id @default(cuid())
+  eventId   String
+  topicId   String
+  createdAt DateTime @default(now())
+
+  event     StoryEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  topic     Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, topicId])
+  @@index([eventId])
+  @@index([topicId])
+  @@map("event_topics")
+}
+
+model SourceReference {
+  id           String     @id @default(cuid())
+  storyId      String
+  sourceType   SourceType
+  sourceId     String
+  quotedText   String
+  location     String?    // page, section, etc.
+  metadata     Json?
+  createdAt    DateTime   @default(now())
+
+  story        Story      @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  events       StoryEvent[] @relation("EventSourceReferences")
+
+  @@index([storyId])
+  @@index([sourceType, sourceId])
+  @@map("source_references")
+}
+
+// ============================================================
+// FOLLOW-UPS
+// ============================================================
+
+model FollowUpEntry {
+  id                   String           @id @default(cuid())
+  storyId              String
+  userId               String
+  type                 FollowUpType
+  originalText         String
+  eventDate            DateTime?
+  eventDatePrecision   DatePrecision    @default(UNKNOWN)
+  status               EventStatus      @default(AI_ORGANIZED)
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  language             String           @default("en")
+  extractedItems       Json?            // FollowUpItem[]
+
+  story                Story            @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user                 User             @relation("UserFollowUps", fields: [userId], references: [id], onDelete: Cascade)
+  items                FollowUpItem[]
+  relatedDocuments     Document[]       @relation("DocumentFollowUp")
+
+  @@index([storyId])
+  @@index([userId])
+  @@index([type])
+  @@map("follow_up_entries")
+}
+
+model FollowUpItem {
+  id               String             @id @default(cuid())
+  followUpId       String
+  type             String             // EVENT, INFORMATION, QUESTION, etc.
+  text             String
+  sourceText       String
+  sourceType       SourceType
+  confidence       ExtractionConfidence
+  status           FollowUpItemStatus @default(AI_ORGANIZED)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  followUp         FollowUpEntry      @relation(fields: [followUpId], references: [id], onDelete: Cascade)
+
+  @@index([followUpId])
+  @@map("follow_up_items")
+}
+
+// ============================================================
+// QUESTIONS
+// ============================================================
+
+model StoryQuestion {
+  id        String        @id @default(cuid())
+  storyId   String
+  userId    String?
+  text      String
+  source    QuestionSource @default(USER)
+  status    QuestionStatus @default(OPEN)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  story     Story         @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user      User?         @relation("UserQuestions", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([storyId])
+  @@index([status])
+  @@map("story_questions")
+}
+
+// ============================================================
+// DOCUMENTS
+// ============================================================
+
+model Document {
+  id              String         @id @default(cuid())
+  storyId         String
+  userId          String
+  filename        String
+  mimeType        String
+  sizeBytes       Int
+  storageKey      String         @unique
+  checksum        String
+  title           String?
+  originalText    String?        // Original document text for analysis
+  status          DocumentStatus @default(UPLOADED)
+  uploadedAt      DateTime       @default(now())
+  processedAt     DateTime?
+  deletedAt       DateTime?
+  pageCount       Int?
+  language        String?
+  analysis        Json?          // DocumentAnalysis
+  relatedFollowUpId String?
+
+  story           Story          @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user            User           @relation("UserDocuments", fields: [userId], references: [id], onDelete: Cascade)
+  followUp        FollowUpEntry? @relation("DocumentFollowUp", fields: [relatedFollowUpId], references: [id], onDelete: SetNull)
+  sections        DocumentSection[]
+  terms           DocumentTerm[]
+  measurements    DocumentMeasurement[]
+
+  @@index([storyId])
+  @@index([userId])
+  @@index([status])
+  @@index([storageKey])
+  @@map("documents")
+}
+
+model DocumentSection {
+  id                 String   @id @default(cuid())
+  documentId         String
+  pageNumber         Int
+  sectionTitle       String?
+  originalText       String
+  orderIndex         Int
+  sourceReferenceId  String?
+  createdAt          DateTime @default(now())
+
+  document           Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@index([documentId, pageNumber])
+  @@map("document_sections")
+}
+
+model DocumentTerm {
+  id                  String   @id @default(cuid())
+  documentId          String
+  term                String
+  plainDefinition     String
+  documentContext     String?
+  sourceReferenceId   String?
+  savedByUser         Boolean  @default(false)
+  createdAt           DateTime @default(now())
+
+  document            Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@map("document_terms")
+}
+
+model DocumentMeasurement {
+  id                 String   @id @default(cuid())
+  documentId         String
+  label               String
+  value               String
+  unit                String?
+  referenceRange      String?
+  date                DateTime?
+  sourceReferenceId   String?
+  createdAt           DateTime @default(now())
+
+  document            Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@map("document_measurements")
+}
+
+// ============================================================
+// COMMUNICATION
+// ============================================================
+
+model CommunicationSession {
+  id                String             @id @default(cuid())
+  storyId           String
+  userId            String
+  sourceLanguage    String             @default("en")
+  targetLanguage    String?
+  style             String?            // Quick, Standard, Detailed
+  tone              String?            // Calm, Direct, Simple, Clear & structured
+  pointOfView       String?            // first person, neutral
+  simplifyLanguage  Boolean            @default(false)
+  selectedEventIds  String[]           // stored as JSON array
+  selectedTopicIds  String[]
+  selectedQuestionIds String[]
+  sourceVersion     Int
+  draft             String?            // generated draft
+  finalDraft        String?
+  status            CommunicationStatus @default(DRAFT)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  story             Story              @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user              User               @relation("UserCommunications", fields: [userId], references: [id], onDelete: Cascade)
+  translations      CommunicationTranslation[]
+
+  @@index([storyId])
+  @@index([userId])
+  @@index([status])
+  @@map("communication_sessions")
+}
+
+model CommunicationTranslation {
+  id                   String   @id @default(cuid())
+  communicationId      String
+  sourceLanguage       String
+  targetLanguage       String
+  sourceVersion        Int
+  content              String
+  reviewedByUser       Boolean  @default(false)
+  createdAt            DateTime @default(now())
+
+  communication        CommunicationSession @relation(fields: [communicationId], references: [id], onDelete: Cascade)
+
+  @@index([communicationId])
+  @@map("communication_translations")
+}
+
+// ============================================================
+// SNAPSHOTS & VERSIONING
+// ============================================================
+
+model StorySnapshot {
+  id            String   @id @default(cuid())
+  storyId       String
+  versionNumber Int
+  createdAt     DateTime @default(now())
+  createdBy     String
+  summary       Json?    // snapshot metadata
+  eventCount    Int      @default(0)
+  topicCount    Int      @default(0)
+  documentCount Int      @default(0)
+  questionCount Int      @default(0)
+
+  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@unique([storyId, versionNumber])
+  @@index([storyId])
+  @@map("story_snapshots")
+}
+
+model StoryVersion {
+  id            String              @id @default(cuid())
+  storyId       String
+  versionNumber Int
+  changeReason  VersionChangeReason
+  createdAt     DateTime            @default(now())
+  createdBy     String
+  source        String?             // what triggered this version
+  metadata      Json?               // diff, changed entities, etc.
+
+  story         Story               @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@unique([storyId, versionNumber])
+  @@index([storyId])
+  @@map("story_versions")
+}
+
+// ============================================================
+// KNOWLEDGE GRAPH
+// ============================================================
+
+model StoryGraphNode {
+  id          String    @id @default(cuid())
+  storyId     String
+  nodeType    NodeType
+  entityId    String    // references the actual entity (eventId, topicId, etc.)
+  title       String
+  status      EventStatus @default(AI_ORGANIZED)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  story       Story     @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  fromEdges   StoryGraphRelationship[] @relation("FromEdges")
+  toEdges     StoryGraphRelationship[] @relation("ToEdges")
+
+  @@index([storyId])
+  @@index([storyId, nodeType])
+  @@index([entityId])
+  @@map("story_graph_nodes")
+}
+
+model StoryGraphRelationship {
+  id                String              @id @default(cuid())
+  storyId           String
+  fromNodeId        String
+  toNodeId          String
+  relationshipType  RelationshipType
+  sourceIds         String[]            // source reference IDs
+  createdBy         RelationshipOrigin  @default(AI)
+  confirmedByUser   Boolean             @default(false)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  story             Story               @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  fromNode          StoryGraphNode      @relation("FromEdges", fields: [fromNodeId], references: [id], onDelete: Cascade)
+  toNode            StoryGraphNode      @relation("ToEdges", fields: [toNodeId], references: [id], onDelete: Cascade)
+
+  @@index([storyId])
+  @@index([fromNodeId])
+  @@index([toNodeId])
+  @@index([relationshipType])
+  @@map("story_graph_relationships")
+}
+
+// ============================================================
+// AUDIT & AI PROCESSING
+// ============================================================
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  // Nullable so security events that happen BEFORE a user exists or is
+  // identified (failed login, rate limiting by IP) can still be recorded.
+  userId      String?
+  storyId     String?
+  action      AuditAction
+  resourceType String
+  resourceId  String?
+  timestamp   DateTime    @default(now())
+  metadata    Json?
+
+  user        User?       @relation("UserAuditLogs", fields: [userId], references: [id], onDelete: Cascade)
+  story       Story?      @relation("StoryAuditLogs", fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([storyId])
+  @@index([action])
+  @@index([timestamp])
+  @@map("audit_logs")
+}
+
+model AIProcessingRecord {
+  id              String             @id @default(cuid())
+  storyId         String
+  story           Story              @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  type            AIProcessingType
+  status          AIProcessingStatus @default(PENDING)
+  inputSummary    Json?
+  outputSummary   Json?
+  errorMessage    String?
+  tokensUsed      Int?
+  durationMs      Int?
+  provider        String?            // e.g., "openai", "anthropic"
+  model           String?            // e.g., "gpt-4o", "claude-3-5-sonnet"
+  createdAt       DateTime           @default(now())
+  completedAt     DateTime?
+
+  @@index([storyId])
+  @@index([type])
+  @@index([status])
+  @@map("ai_processing_records")
+}
+
+// ============================================================
+// USER STORY LINKS (Stage 9 user-created connections)
+// ============================================================
+
+model UserStoryLink {
+  id          String   @id @default(cuid())
+  storyId     String
+  fromNodeId  String
+  toNodeId    String
+  reason      String
+  createdAt   DateTime @default(now())
+
+  @@index([storyId])
+  @@map("user_story_links")
+}

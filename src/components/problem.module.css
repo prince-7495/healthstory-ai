@@ -1,0 +1,306 @@
+/* =============================================================
+   ProblemSection + TransformationSection
+   ============================================================= */
+
+/* ---------- problem cards ---------- */
+.cards {
+  align-items: stretch;
+}
+
+.cards > li {
+  display: flex;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 28px 24px 26px;
+}
+
+.card h3 {
+  font-size: 1.1rem;
+}
+
+.cardBody {
+  margin-top: 9px;
+  font-size: 14.8px;
+  line-height: 1.6;
+  color: var(--ink-500);
+}
+
+/* ---------- transformation (the wow moment) ---------- */
+.ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 60% at 50% 50%, rgba(63, 159, 176, 0.16), transparent 72%);
+}
+
+/* The stacking rule for dark sections lives in globals.css, because
+   `.section--dark` and `.container` are both global classes. */
+
+.wrap {
+  max-width: 1080px;
+  margin-inline: auto;
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .cols {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+}
+
+.colLabel {
+  font-size: 11.6px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8ea2b0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+@media (min-width: 901px) {
+  .colLabel {
+    text-align: left;
+  }
+}
+
+/* ---------- scattered chips: deliberately untidy ---------- */
+.scatter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  justify-content: center;
+}
+
+@media (min-width: 901px) {
+  .scatter {
+    justify-content: flex-start;
+  }
+}
+
+.scatterChip {
+  padding: 8px 14px;
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: #b9c6d1;
+  font-size: 13.4px;
+  letter-spacing: -0.005em;
+  opacity: 0;
+  transform: translateY(10px) rotate(var(--tilt, 0deg));
+  transition:
+    opacity 520ms var(--ease-out),
+    transform 520ms var(--ease-out),
+    border-color var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
+}
+
+/* A small, controlled messiness — rotated just enough to read as "scattered". */
+.scatterChip:nth-child(1) { --tilt: -2.2deg; }
+.scatterChip:nth-child(2) { --tilt: 1.6deg; }
+.scatterChip:nth-child(3) { --tilt: -1.1deg; }
+.scatterChip:nth-child(4) { --tilt: 2.4deg; }
+.scatterChip:nth-child(5) { --tilt: -1.8deg; }
+.scatterChip:nth-child(6) { --tilt: 1.2deg; }
+
+[data-in] .scatterChip {
+  opacity: 1;
+  transform: translateY(0) rotate(var(--tilt, 0deg));
+  transition-delay: calc(var(--i) * 90ms);
+}
+
+.scatterChip:hover {
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* ---------- ordered output: clean rail ---------- */
+.ordered {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding-left: 20px;
+}
+
+.ordered::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  bottom: 8px;
+  width: 1.5px;
+  background: linear-gradient(180deg, var(--brand-300), rgba(63, 159, 176, 0.25));
+  transform: scaleY(0);
+  transform-origin: top;
+}
+
+[data-in] .ordered::before {
+  transform: scaleY(1);
+  transition: transform 900ms var(--ease-out) 220ms;
+}
+
+.orderedItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  color: #eef3f6;
+  opacity: 0;
+  transform: translateX(-12px);
+  transition:
+    opacity 520ms var(--ease-out),
+    transform 520ms var(--ease-out);
+}
+
+[data-in] .orderedItem {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(360ms + var(--i) * 85ms);
+}
+
+.orderedDot {
+  position: absolute;
+  left: -20px;
+  width: 9.5px;
+  height: 9.5px;
+  border-radius: 50%;
+  background: var(--brand-300);
+  box-shadow: 0 0 0 3px rgba(15, 102, 120, 0.28);
+}
+
+/* ---------- the AI step ---------- */
+.middle {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+@media (max-width: 900px) {
+  .middle {
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+
+.flowLine {
+  display: block;
+  width: 46px;
+  height: 1.5px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), var(--brand-300));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.middle .flowLine:last-child {
+  background: linear-gradient(90deg, var(--brand-300), rgba(255, 255, 255, 0.06));
+}
+
+[data-in] .flowLine {
+  transform: scaleX(1);
+  transition: transform 620ms var(--ease-out) 180ms;
+}
+
+@media (max-width: 900px) {
+  .flowLine {
+    width: 1.5px;
+    height: 40px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), var(--brand-300));
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  .middle .flowLine:last-child {
+    background: linear-gradient(180deg, var(--brand-300), rgba(255, 255, 255, 0.06));
+  }
+  [data-in] .flowLine {
+    transform: scaleY(1);
+    transition: transform 620ms var(--ease-out) 180ms;
+  }
+}
+
+.aiNode {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  width: 96px;
+  height: 96px;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(28, 128, 147, 0.16);
+  border: 1px solid rgba(113, 189, 202, 0.4);
+  color: var(--brand-200);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transform: scale(0.86);
+  transition:
+    opacity 620ms var(--ease-out) 120ms,
+    transform 620ms var(--ease-out) 120ms;
+}
+
+[data-in] .aiNode {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.aiHalo {
+  position: absolute;
+  inset: -9px;
+  border-radius: 50%;
+  border: 1px solid rgba(113, 189, 202, 0.22);
+  opacity: 0;
+}
+
+[data-in] .aiHalo {
+  animation: hs-pulse 3.6s var(--ease) infinite 900ms;
+}
+
+.aiText {
+  font-size: 11.6px;
+  font-weight: 700;
+  letter-spacing: 0.19em;
+  color: #cfe3e8;
+}
+
+@keyframes hs-pulse {
+  0% { opacity: 0.7; transform: scale(0.94); }
+  70% { opacity: 0; transform: scale(1.16); }
+  100% { opacity: 0; transform: scale(1.16); }
+}
+
+.caption {
+  margin-top: 46px;
+  text-align: center;
+  font-size: 14.4px;
+  color: #93a6b4;
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scatterChip,
+  .orderedItem,
+  .aiNode,
+  .flowLine,
+  .ordered::before {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}

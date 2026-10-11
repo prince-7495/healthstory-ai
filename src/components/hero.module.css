@@ -1,0 +1,109 @@
+.hero {
+  position: relative;
+  padding-top: calc(var(--nav-h) + 68px);
+  padding-bottom: clamp(56px, 7vw, 92px);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+@media (max-width: 860px) {
+  .hero {
+    padding-top: calc(var(--nav-h) + 44px);
+  }
+}
+
+/* Restrained ambient light — one warm wash, one cool wash. */
+.glow {
+  position: absolute;
+  inset: -30% -10% auto;
+  height: 780px;
+  z-index: -2;
+  background:
+    radial-gradient(46% 52% at 22% 12%, rgba(63, 159, 176, 0.16), transparent 68%),
+    radial-gradient(40% 46% at 82% 4%, rgba(168, 130, 96, 0.11), transparent 70%);
+  pointer-events: none;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background-image:
+    linear-gradient(to right, rgba(11, 22, 34, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(11, 22, 34, 0.045) 1px, transparent 1px);
+  background-size: 68px 68px;
+  mask-image: radial-gradient(70% 60% at 50% 0%, #000 0%, transparent 78%);
+  -webkit-mask-image: radial-gradient(70% 60% at 50% 0%, #000 0%, transparent 78%);
+  pointer-events: none;
+}
+
+.inner {
+  display: grid;
+  gap: clamp(40px, 5vw, 60px);
+  align-items: center;
+}
+
+@media (min-width: 1080px) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.copy {
+  max-width: 880px;
+}
+
+.title {
+  margin-top: 18px;
+  font-size: clamp(1.98rem, 5.1vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.038em;
+}
+
+.line {
+  display: block;
+}
+
+.line + .line {
+  margin-top: 2px;
+}
+
+/* Second line reads as the quieter half of the promise. */
+.line:last-child {
+  color: var(--ink-400);
+}
+
+.lede {
+  margin-top: 22px;
+  max-width: 660px;
+  font-size: clamp(1.03rem, 1.25vw, 1.16rem);
+}
+
+.btnRow {
+  margin-top: 32px;
+}
+
+.trust {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 22px;
+  max-width: 560px;
+  font-size: 13.6px;
+  line-height: 1.55;
+  color: var(--ink-400);
+}
+
+.trustDot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: var(--brand-400);
+  box-shadow: 0 0 0 4px var(--brand-50);
+}
+
+.visual {
+  min-width: 0;
+}

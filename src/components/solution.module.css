@@ -1,0 +1,304 @@
+/* =============================================================
+   SolutionSection — the product mockup
+   ============================================================= */
+
+.frame {
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+  box-shadow: var(--sh-lg);
+  overflow: hidden;
+}
+
+/* ---------- window chrome ---------- */
+.chrome {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+
+.chromeTitle {
+  font-size: 12.4px;
+  font-weight: 500;
+  color: var(--ink-400);
+  letter-spacing: -0.005em;
+}
+
+/* ---------- header ---------- */
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px 26px 20px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.title {
+  font-size: 1.45rem;
+  letter-spacing: -0.03em;
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--ink-400);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  padding: 6px 13px;
+  border-radius: var(--r-full);
+  background: var(--brand-600);
+  color: #fff;
+  font-size: 12.2px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: var(--sh-brand);
+}
+
+@media (max-width: 560px) {
+  .head {
+    flex-direction: column;
+    padding: 20px 18px 16px;
+  }
+}
+
+/* ---------- body split ---------- */
+.body {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 28px;
+  padding: 26px 26px 10px;
+}
+
+@media (max-width: 860px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    padding: 20px 18px 8px;
+  }
+}
+
+/* ---------- summary aside ---------- */
+.summary {
+  align-self: start;
+  padding: 18px;
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+  border: 1px solid var(--line-soft);
+}
+
+.summaryLabel {
+  font-size: 11.2px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  margin-bottom: 14px;
+}
+
+.summaryList {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  font-size: 13.6px;
+  color: var(--ink-700);
+}
+
+.summaryDot {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-radius: 3px;
+  background: var(--brand-500);
+}
+
+.summaryName {
+  letter-spacing: -0.008em;
+}
+
+.summaryCount {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 12.4px;
+  font-weight: 600;
+  color: var(--ink-400);
+}
+
+.summaryNote {
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px dashed var(--line);
+  font-size: 12.4px;
+  line-height: 1.5;
+  color: var(--ink-400);
+}
+
+/* ---------- chronological stream ---------- */
+.stream {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-left: 0;
+}
+
+.entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: 62px 20px minmax(0, 1fr);
+  gap: 0 14px;
+  padding-bottom: 22px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 520ms var(--ease-out),
+    transform 520ms var(--ease-out);
+  transition-delay: calc(160ms + var(--i) * 75ms);
+}
+
+/* Staggered entrance is driven by the shared reveal observer, which adds a
+   global `.is-in` class — hence `:global()` so CSS Modules doesn't hash it. */
+:global(.is-in) .entry {
+  opacity: 1;
+  transform: none;
+}
+
+.entry:last-child {
+  padding-bottom: 8px;
+}
+
+.entryDate {
+  padding-top: 2px;
+  font-size: 12.6px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-400);
+  text-align: right;
+}
+
+/* rail + node */
+.entryNode {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.entryNode::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: -22px;
+  width: 1.5px;
+  background: var(--line);
+}
+
+.entry:last-child .entryNode::before {
+  display: none;
+}
+
+.entryNode::after {
+  content: "";
+  position: relative;
+  width: 9px;
+  height: 9px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--brand-400);
+  box-shadow: 0 0 0 3px var(--surface);
+}
+
+.entryBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.entryTag {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 10px 3px 8px;
+  border-radius: var(--r-full);
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  font-size: 11.8px;
+  font-weight: 600;
+  letter-spacing: -0.002em;
+  color: var(--ink-500);
+  white-space: nowrap;
+}
+
+.entryTagDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brand-500);
+}
+
+.entryText {
+  font-size: 14.8px;
+  line-height: 1.5;
+  color: var(--ink-800);
+  letter-spacing: -0.008em;
+}
+
+/* ---------- caption ---------- */
+.caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 26px 20px;
+  border-top: 1px dashed var(--line);
+  font-size: 12.4px;
+  color: var(--ink-400);
+}
+
+/* ---------- category tones (always paired with a text label) ---------- */
+.summaryDot[data-tone="teal"],
+.entryTagDot[data-tone="teal"] { background: var(--brand-500); }
+.summaryDot[data-tone="blue"],
+.entryTagDot[data-tone="blue"] { background: #3b6ea8; }
+.summaryDot[data-tone="amber"],
+.entryTagDot[data-tone="amber"] { background: #a8721c; }
+.summaryDot[data-tone="violet"],
+.entryTagDot[data-tone="violet"] { background: #6b5aa6; }
+.summaryDot[data-tone="green"],
+.entryTagDot[data-tone="green"] { background: #2f7d5f; }
+
+@media (prefers-reduced-motion: reduce) {
+  .entry {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

@@ -1,0 +1,205 @@
+/* =============================================================
+   GlobalAccessibility — multilingual concept visual
+   ============================================================= */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+
+.headCopy {
+  max-width: 700px;
+}
+
+/* `.h-section` and `.lede` are global primitives. */
+.headCopy :global(.h-section) {
+  margin-top: 16px;
+}
+
+.headCopy :global(.lede) {
+  margin-top: 18px;
+}
+
+.chipStatic {
+  white-space: nowrap;
+}
+
+/* ---------- the vertical flow ---------- */
+.stage {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ---------- tabs ---------- */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.tab {
+  padding: 8px 16px;
+  border-radius: var(--r-full);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink-500);
+  font-size: 13.6px;
+  font-weight: 500;
+  letter-spacing: -0.006em;
+  transition:
+    background-color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+
+.tab:hover {
+  border-color: var(--brand-300);
+  color: var(--brand-700);
+}
+
+.tab[data-active] {
+  background: var(--ink-900);
+  border-color: var(--ink-900);
+  color: #fff;
+}
+
+/* ---------- cards ---------- */
+.card {
+  padding: 22px 24px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--sh-sm);
+}
+
+.cardOut {
+  background: linear-gradient(168deg, var(--brand-50), #fff 60%);
+  border-color: var(--brand-100);
+}
+
+.cardLabel {
+  display: block;
+  font-size: 11.2px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  margin-bottom: 12px;
+}
+
+.quote {
+  font-size: clamp(1.1rem, 1.9vw, 1.34rem);
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  color: var(--ink-900);
+  animation: hs-fade 420ms var(--ease-out);
+}
+
+/* Arabic renders correctly on its own; give it room. */
+.quote[dir="rtl"] {
+  text-align: right;
+  font-size: clamp(1.06rem, 1.75vw, 1.26rem);
+  line-height: 1.75;
+}
+
+@keyframes hs-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.gloss {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  font-size: 13.4px;
+  line-height: 1.55;
+  color: var(--ink-400);
+}
+
+/* ---------- connectors ---------- */
+.arrow {
+  display: grid;
+  place-items: center;
+  height: 42px;
+  color: var(--brand-300);
+}
+
+.ai {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: center;
+  padding: 9px 18px;
+  border-radius: var(--r-full);
+  background: var(--brand-50);
+  border: 1px solid var(--brand-100);
+  color: var(--brand-700);
+  font-size: 13.2px;
+  font-weight: 600;
+  letter-spacing: -0.006em;
+}
+
+/* ---------- structured output ---------- */
+.outList {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.outList li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 13px;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--line);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-800);
+  letter-spacing: -0.008em;
+}
+
+.outDot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--brand-500);
+}
+
+/* ---------- note ---------- */
+.note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  max-width: 720px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+  font-size: 12.6px;
+  line-height: 1.55;
+  color: var(--ink-400);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quote {
+    animation: none;
+  }
+}

@@ -1,0 +1,280 @@
+.wrap {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  background: rgba(250, 249, 247, 0.72);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color var(--t-mid) var(--ease),
+    border-color var(--t-mid) var(--ease),
+    box-shadow var(--t-mid) var(--ease);
+}
+
+.wrap[data-scrolled] {
+  background: rgba(250, 249, 247, 0.9);
+  border-bottom-color: var(--line);
+  box-shadow: 0 1px 20px -8px rgba(11, 22, 34, 0.16);
+}
+
+.inner {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  transition: height var(--t-mid) var(--ease);
+}
+
+.wrap[data-scrolled] .inner {
+  height: var(--nav-h-scrolled);
+}
+
+/* ---------- Brand ---------- */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  flex-shrink: 0;
+  min-width: 0;
+  /* Keeps the logo link a comfortable touch target. */
+  min-height: 44px;
+  padding-right: 4px;
+  border-radius: var(--r-md);
+}
+
+.brand svg {
+  transition: transform var(--t-slow) var(--ease-out);
+}
+
+.brand:hover svg {
+  transform: rotate(-4deg) scale(1.04);
+}
+
+.brandText {
+  font-family: var(--font-display);
+  font-size: 17.5px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Desktop links ---------- */
+.links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.link {
+  position: relative;
+  padding: 9px 14px;
+  font-size: 14.8px;
+  font-weight: 500;
+  color: var(--ink-500);
+  border-radius: var(--r-full);
+  transition:
+    color var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 4px;
+  height: 1.5px;
+  background: var(--brand-400);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--t-mid) var(--ease-out);
+}
+
+.link:hover {
+  color: var(--ink-900);
+}
+
+.link:hover::after {
+  transform: scaleX(1);
+}
+
+/* ---------- Actions ---------- */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.cta {
+  padding: 11px 19px;
+  min-height: 44px;
+  font-size: 14.5px;
+}
+
+/* The CTA label shortens on small screens so the bar never overflows.
+   The full wording stays in the DOM and in the accessible name. */
+.ctaShort {
+  display: none;
+}
+
+.burger {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-800);
+  transition:
+    border-color var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
+}
+
+.burger:hover {
+  border-color: var(--brand-300);
+}
+
+/* ---------- Mobile panel ---------- */
+.mobile {
+  display: none;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  padding: 22px var(--gutter) 28px;
+  max-height: calc(100dvh - var(--nav-h));
+  overflow-y: auto;
+}
+
+.mobileLinks {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileLink {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 2px;
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+  opacity: 0;
+  transform: translateX(-10px);
+  transition:
+    opacity var(--t-mid) var(--ease-out),
+    transform var(--t-mid) var(--ease-out),
+    color var(--t-fast) var(--ease);
+}
+
+.mobile[data-open] .mobileLink {
+  opacity: 1;
+  transform: none;
+}
+
+.mobileLink:active {
+  color: var(--brand-600);
+}
+
+.mobileLink svg {
+  margin-left: auto;
+  color: var(--ink-300);
+}
+
+.mobileIndex {
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--brand-600);
+}
+
+.mobileCta {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.mobileNote {
+  margin-top: 16px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-400);
+}
+
+/* ---------- Breakpoints ---------- */
+@media (max-width: 1080px) {
+  .links {
+    gap: 0;
+  }
+  .link {
+    padding: 9px 10px;
+    font-size: 14.2px;
+  }
+  .link::after {
+    left: 10px;
+    right: 10px;
+  }
+}
+
+@media (max-width: 920px) {
+  .links {
+    display: none;
+  }
+  .burger {
+    display: grid;
+  }
+  /* Only reveal the panel when it is actually open.
+     A bare `display: block` here would override the `hidden` attribute and
+     leave the menu permanently expanded on mobile. */
+  .mobile[data-open] {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Tighter bar so brand + CTA + burger always fit without overflow. */
+  .inner {
+    gap: 10px;
+  }
+  .brandText {
+    font-size: 15.4px;
+  }
+  .brand {
+    gap: 9px;
+  }
+  .actions {
+    gap: 8px;
+  }
+  .cta {
+    padding: 10px 14px;
+    min-height: 42px;
+    font-size: 13.4px;
+    gap: 6px;
+  }
+  .cta svg {
+    display: none;
+  }
+  .ctaFull {
+    display: none;
+  }
+  .ctaShort {
+    display: inline;
+  }
+  .burger {
+    width: 42px;
+    height: 42px;
+  }
+}

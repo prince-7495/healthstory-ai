@@ -1,0 +1,302 @@
+/* =============================================================
+   Stage 11 — judge-facing /security page
+   Uses only the shared design-system tokens from globals.css
+   ============================================================= */
+
+/* ---------- Simple top bar (the landing Navbar is anchor-based) ---------- */
+.header {
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.headerInner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 16px var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ink-900);
+}
+
+.homeLink {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--brand-600);
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+
+.homeLink:hover {
+  border-color: var(--brand-300);
+  background: var(--brand-50);
+}
+
+/* ---------- Live status panel ---------- */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+  padding: 26px 28px;
+  margin-top: 40px;
+}
+
+.panelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.panelTitle {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.liveTag {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-600);
+  background: var(--brand-50);
+  border: 1px solid var(--brand-200);
+  border-radius: var(--r-full);
+  padding: 4px 11px;
+}
+
+.panelNote {
+  font-size: 14.5px;
+  color: var(--ink-500);
+  margin-bottom: 14px;
+}
+
+.rows {
+  display: grid;
+  gap: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 11px 0;
+  border-top: 1px solid var(--line-soft);
+  font-size: 15px;
+}
+
+.rowLabel {
+  color: var(--ink-500);
+}
+
+.rowValue {
+  font-weight: 600;
+  color: var(--ink-800);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.state {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 4px 12px;
+  border-radius: var(--r-full);
+}
+
+.state::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.stateOk {
+  color: var(--sig-fall);
+  background: var(--sig-fall-bg);
+}
+
+.stateWarn {
+  color: var(--sig-rise);
+  background: var(--sig-rise-bg);
+}
+
+.stateErr {
+  color: #9b2c2c;
+  background: #fdecec;
+}
+
+.muted {
+  color: var(--ink-400);
+  font-weight: 500;
+}
+
+/* ---------- Rate-limit table ---------- */
+.tableWrap {
+  margin-top: 18px;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14.5px;
+}
+
+.table th {
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-400);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--ink-700);
+}
+
+.table td.mono,
+.mono {
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, monospace;
+  font-size: 13.5px;
+}
+
+/* ---------- Check cards (integrity catalog) ---------- */
+.checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.check {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+}
+
+.checkId {
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--brand-700);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.checkLabel {
+  font-size: 14px;
+  color: var(--ink-500);
+  line-height: 1.5;
+}
+
+/* ---------- Content cards ---------- */
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin-bottom: 8px;
+}
+
+.cardBody {
+  font-size: 15.5px;
+  color: var(--ink-500);
+  line-height: 1.6;
+}
+
+.cardBody strong {
+  color: var(--ink-700);
+  font-weight: 600;
+}
+
+.list {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.listItem {
+  position: relative;
+  padding-left: 22px;
+  font-size: 15px;
+  color: var(--ink-500);
+  line-height: 1.55;
+}
+
+.listItem::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--brand-300);
+}
+
+.listItem strong {
+  color: var(--ink-700);
+  font-weight: 600;
+}
+
+/* ---------- Code blocks ---------- */
+.code {
+  display: block;
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Menlo, monospace;
+  font-size: 13.5px;
+  line-height: 1.7;
+  background: var(--bg-deep);
+  color: #dbe7ee;
+  border-radius: var(--r-md);
+  padding: 18px 20px;
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.code .dim {
+  color: #7f96a5;
+}
+
+/* ---------- Inline note ---------- */
+.note {
+  border-left: 3px solid var(--brand-400);
+  background: var(--brand-50);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  padding: 14px 18px;
+  font-size: 15px;
+  color: var(--ink-700);
+  margin-top: 18px;
+}
+
+.note strong {
+  font-weight: 700;
+  color: var(--brand-800);
+}

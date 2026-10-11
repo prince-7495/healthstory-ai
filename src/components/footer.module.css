@@ -1,0 +1,116 @@
+/* =============================================================
+   Footer
+   ============================================================= */
+
+.footer {
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  padding-block: 56px 34px;
+}
+
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 34px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink-900);
+}
+
+.brand svg {
+  transition: transform var(--t-slow) var(--ease-out);
+}
+
+.brand:hover svg {
+  transform: rotate(-4deg);
+}
+
+.tagline {
+  margin-top: 14px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  color: var(--ink-400);
+  max-width: 20ch;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 4px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 13px;
+  border-radius: var(--r-full);
+  font-size: 14.4px;
+  color: var(--ink-500);
+  transition:
+    color var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
+}
+
+.link:hover {
+  color: var(--ink-900);
+  background: var(--bg-alt);
+}
+
+.disclaimer {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line-soft);
+  max-width: 82ch;
+  font-size: 12.8px;
+  line-height: 1.65;
+  color: var(--ink-400);
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+}
+
+.builtFor {
+  font-size: 12.6px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink-400);
+}
+
+.topLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  font-size: 12.6px;
+  font-weight: 600;
+  color: var(--ink-400);
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--line-strong);
+  transition:
+    color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
+}
+
+.topLink:hover {
+  color: var(--brand-600);
+  border-color: var(--brand-300);
+}
