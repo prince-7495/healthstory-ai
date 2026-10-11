@@ -1,10 +1,13 @@
 # HealthStory AI — Railway Deployment Dockerfile
-# Uses multi-stage build for smaller production image
+# Uses debian-based Node for Prisma compatibility (alpine lacks libssl 1.1.x)
 
 # ===== Base Stage =====
-FROM node:22-alpine AS base
+FROM node:22-slim AS base
 WORKDIR /app
 ENV NODE_ENV=production
+
+# Install OpenSSL for Prisma
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 # ===== Dependencies Stage =====
 FROM base AS deps
@@ -16,8 +19,26 @@ FROM base AS builder
 COPY package*.json ./
 RUN npm ci
 COPY . .
-# prisma generate only needs the schema, not a real DB connection
-ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+
+# Set build-time env vars for Next.js (Railway injects them automatically)
+ARG DATABASE_URL
+ARG AUTH_SECRET
+ARG AI_PROVIDER
+ARG AI_API_KEY
+ARG AI_BASE_URL
+ARG AI_MODEL
+ARG AI_TIMEOUT_MS
+ARG NODE_ENV=production
+
+ENV DATABASE_URL=$DATABASE_URL
+ENV AUTH_SECRET=$AUTH_SECRET
+ENV AI_PROVIDER=$AI_PROVIDER
+ENV AI_API_KEY=$AI_API_KEY
+ENV AI_BASE_URL=$AI_BASE_URL
+ENV AI_MODEL=$AI_MODEL
+ENV AI_TIMEOUT_MS=$AI_TIMEOUT_MS
+ENV NODE_ENV=$NODE_ENV
+
 RUN npm run build
 
 # ===== Production Stage =====
@@ -25,8 +46,8 @@ FROM base AS runner
 ENV NODE_ENV=production
 
 # Create non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
 # Copy built application
 COPY --from=builder /app/public ./public
@@ -35,9 +56,11 @@ COPY --from=builder /app/.next/static ./.next/static
 
 # Copy Prisma client and schema
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/prisma ./prisma
 
 # Set ownership
+RUN chown -R nextjs:nodejs /app
 USER nextjs
 
 EXPOSE 3000
